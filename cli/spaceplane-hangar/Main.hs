@@ -100,9 +100,9 @@ toLead2 t = toLead Viola t . down 1
 toLead3 t = toLead Cello t . down 2
 toLead4 t = toLead Contrabass t . up 1
 
-pause = rest . dotted $ bn
+pause = rest $ Music.dur lead1A
 
-base = fromStdMelody Pad2Warm . chordify $ sub ++ c1' ++ dsub ++ c3' ++ ssub
+base = fromStdMelody Pad2Warm . leg . chordify $ sub ++ c1' ++ dsub ++ c3' ++ ssub
 lead1 = lead1A +:+ lead1B +:+ lead1C +:+ lead1D +:+ lead1E
 lead2 = lead2A +:+ lead2B +:+ lead2C +:+ lead2D +:+ lead2E
 lead3 = lead3A +:+ lead3B +:+ lead3C +:+ lead3D +:+ lead3E
@@ -135,11 +135,12 @@ lead4E = toLead4 (offbeat . rhythmicize) $ c1
 tempo = 1 / 2
 stacc = Music.staccato $ tempo / 32
 delay = Music.delay $ tempo / 8
+leg = Music.legato 2
 
 intro1 = toLead SynthBrass1 (offbeat' en . stacc) . up 3 $ sub ++ sc1 ++ dc2
 intro2 = toLead SynthBrass2 (delay . offbeat' en . stacc) . up 2 $ sub ++ sc1 ++ dc2
 
-intro = (((fromStdMelody Pad2Warm . chordify $ sub ++ ssub ++ dsub)
+intro = (((fromStdMelody Pad2Warm . leg . chordify $ sub ++ ssub ++ dsub)
         =:= intro1) +:+ rest (tempo / 8)) =:= intro2
 
 song = changeTempo tempo $

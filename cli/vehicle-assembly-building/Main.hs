@@ -96,9 +96,10 @@ toLead2 t = toLead Viola t . down 1
 toLead3 t = toLead Cello t . down 2
 toLead4 t = toLead TremoloStrings t . up 1
 
-pause = rest . dotted $ bn
+pause = rest $ Music.dur lead1A
+leg = Music.legato 2
 
-base = fromStdMelody Pad2Warm . chordify $ s1 ++ s2' ++ s1 ++ s2' ++ s1
+base = fromStdMelody Pad2Warm . leg . chordify $ s1 ++ s2' ++ s1 ++ s2' ++ s1
 lead1 = lead1A +:+ lead1B +:+ lead1C +:+ lead1D +:+ lead1E
 lead2 = lead2A +:+ lead2B +:+ lead2C +:+ lead2D +:+ lead2E
 lead3 = lead3A +:+ lead3B +:+ lead3C +:+ lead3D +:+ lead3E
@@ -132,12 +133,12 @@ song = changeTempo (1 / 8) $
        base =:= lead1 =:= lead2 =:= lead3 =:= lead4
 
 patch :: ChannelProgramTable Instrument
-patch = [ (Contrabass, (toChannel 0, toProgram 46))
-        , (Cello, (toChannel 1, toProgram 47))
-        , (Viola, (toChannel 2, toProgram 48))
-        , (Violin, (toChannel 3, toProgram 49))
-        , (TremoloStrings, (toChannel 4, toProgram 70))
-        , (Pad2Warm, (toChannel 0, toProgram 44))
+patch = [ (Contrabass, (toChannel 0, toProgram 51))
+        , (Cello, (toChannel 1, toProgram 52))
+        , (Viola, (toChannel 2, toProgram 53))
+        , (Violin, (toChannel 3, toProgram 54))
+        , (TremoloStrings, (toChannel 4, toProgram 71))
+        , (Pad2Warm, (toChannel 0, toProgram 50))
         ]
 
 main :: IO ()
