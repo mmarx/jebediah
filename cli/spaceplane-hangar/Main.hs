@@ -132,8 +132,8 @@ lead4C = pause
 lead4D = toLead4 id $ dsub
 lead4E = toLead4 (offbeat . rhythmicize) $ c1
 
-intro1 = toLead SynthBrass1 (offbeat' en) . up 2 $ sub
-intro2 = toLead SynthBrass2 (offbeat' den) . up 1 $ sub
+intro1 = toLead SynthBrass1 (offbeat' en . Music.staccato (1/128)) . up 3 $ sub ++ sc1 ++ dc2
+intro2 = toLead SynthBrass2 (Music.delay (1/32) . offbeat' en . Music.staccato (1/128)) . up 2 $ sub ++ sc1 ++ dc2
 
 intro = (fromStdMelody Pad2Warm . chordify $ sub ++ ssub ++ dsub)
         =:= intro1 =:= intro2
