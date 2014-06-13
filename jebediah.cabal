@@ -22,11 +22,8 @@ library
                      , Jebediah.Note
                      , Jebediah.Util
   build-depends:       base == 4.6.*
-                     , transformers == 0.3.*
                      , midi == 0.2.*
                      , haskore == 0.2.*
-                     , alsa-core == 0.5.*
-                     , alsa-seq == 0.6.*
                      , process == 1.1.0.*
 
 executable spaceplane-hangar
