@@ -14,6 +14,10 @@ module Jebediah.Note ( Line
                      , toLine
                      , toNote
                      , transpose
+                     , up
+                     , down
+                     , narrow
+                     , widen
                      )
        where
 
@@ -21,6 +25,9 @@ import Prelude hiding ( fst
                       , snd
                       )
 
+import Haskore.Basic.Duration ( Ratio
+                              , scale
+                              )
 import Haskore.Basic.Pitch ( Class ()
                            , Octave
                            )
@@ -67,3 +74,15 @@ type Line = Music.T (Melody.Note NoteAttributes)
 
 toLine :: [Note] -> Line
 toLine = line . map toNote
+
+up :: Int -> [Note] -> [Note]
+up n = map $ \(cls, oct, dur) -> (cls, oct + n, dur)
+
+down :: Int -> [Note] -> [Note]
+down n = up (-n)
+
+narrow :: Ratio -> [Note] -> [Note]
+narrow r = widen $ 1 / r
+
+widen :: Ratio -> [Note] -> [Note]
+widen r = map $ \(cls, oct, dur) -> (cls, oct, scale r dur)

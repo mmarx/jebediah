@@ -16,7 +16,7 @@ import Haskore.Basic.Duration (wn, hn, qn, en)
 
 import Jebediah.Alsa
 import Jebediah.Counterpoint
-import Jebediah.Note
+import Jebediah.Note hiding (down)
 
 fifth' = map (transpose fifth)
 fourth' = map (transpose (-fourth))

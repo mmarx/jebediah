@@ -21,24 +21,12 @@ import Jebediah.Alsa
 import Jebediah.Counterpoint
 import Jebediah.Note
 
-up :: Int -> [Note] -> [Note]
-up n = map $ \(cls, oct, dur) -> (cls, oct + n, dur)
-
-down :: Int -> [Note] -> [Note]
-down n = up (-n)
-
-narrow :: Ratio -> [Note] -> [Note]
-narrow r = widen $ 1 / r
-
-widen :: Ratio -> [Note] -> [Note]
-widen r = map $ \(cls, oct, dur) -> (cls, oct, scale r dur)
-
 s1 :: [Note]
 s1 = [ (n, 0, qn)
      | n <- [ F, G, G
-            , F, D, C
-            , D, F, F
-            ]
+           , F, D, C
+           , D, F, F
+           ]
      ]
 
 s2 :: [Note]
