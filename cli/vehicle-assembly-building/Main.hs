@@ -78,14 +78,14 @@ chordify ns = Music.line [ Music.chord $
                            filter ((`elem` theScale) . (\(cls, _, _) -> cls))
                            [ transpose i $ n
                            | i <- [ 0
-                                  , 4
-                                  , 7
-                                  , 12
-                                  , 24
-                                  , -9
-                                  , -12
-                                  , -24
-                                  ]
+                                 , 4
+                                 , 7
+                                 , 12
+                                 , 24
+                                 , -9
+                                 , -12
+                                 , -24
+                                 ]
                            ]
                          | n <- ns
                          ]
