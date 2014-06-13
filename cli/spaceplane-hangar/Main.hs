@@ -132,13 +132,17 @@ lead4C = pause
 lead4D = toLead4 id $ dsub
 lead4E = toLead4 (offbeat . rhythmicize) $ c1
 
-intro1 = toLead SynthBrass1 (offbeat' en . Music.staccato (1/128)) . up 3 $ sub ++ sc1 ++ dc2
-intro2 = toLead SynthBrass2 (Music.delay (1/32) . offbeat' en . Music.staccato (1/128)) . up 2 $ sub ++ sc1 ++ dc2
+tempo = 1 / 2
+stacc = Music.staccato $ tempo / 32
+delay = Music.delay $ tempo / 8
 
-intro = (fromStdMelody Pad2Warm . chordify $ sub ++ ssub ++ dsub)
-        =:= intro1 =:= intro2
+intro1 = toLead SynthBrass1 (offbeat' en . stacc) . up 3 $ sub ++ sc1 ++ dc2
+intro2 = toLead SynthBrass2 (delay . offbeat' en . stacc) . up 2 $ sub ++ sc1 ++ dc2
 
-song = changeTempo (1 / 4) $
+intro = (((fromStdMelody Pad2Warm . chordify $ sub ++ ssub ++ dsub)
+        =:= intro1) +:+ rest (tempo / 8)) =:= intro2
+
+song = changeTempo tempo $
        intro +:+ (base =:= lead1 =:= lead2 =:= lead3 =:= lead4)
 
 patch :: ChannelProgramTable Instrument
