@@ -1,4 +1,5 @@
-module Jebediah.Note ( Note
+module Jebediah.Note ( Line
+                     , Note
                      , Movement ( Up
                                 , Down
                                 , None
