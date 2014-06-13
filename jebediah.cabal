@@ -17,12 +17,17 @@ library
   ghc-prof-options:    -auto-all -caf-all
   hs-source-dirs:      src
   exposed-modules:     Jebediah
-                     , Jebediah.Util
                      , Jebediah.Alsa
+                     , Jebediah.Counterpoint
+                     , Jebediah.Note
+                     , Jebediah.Util
   build-depends:       base == 4.6.*
+                     , transformers == 0.3.*
                      , midi == 0.2.*
                      , haskore == 0.2.*
+                     , alsa-core == 0.5.*
                      , alsa-seq == 0.6.*
+                     , process == 1.1.0.*
 
 executable spaceplane-hangar
   default-language:    Haskell2010
@@ -39,6 +44,19 @@ executable vehicle-assembly-building
   ghc-options:         -Wall -Werror -O2 -rtsopts=all
   ghc-prof-options:    -auto-all -caf-all -rtsopts=all
   hs-source-dirs:      cli/vehicle-assembly-building
+  main-is:             Main.hs
+  build-depends:       base == 4.6.*
+                     , haskore == 0.2.*
+                     , jebediah
+
+executable dangervisit
+  default-language:    Haskell2010
+  ghc-options:         -Wall -Werror
+                       -fno-warn-missing-signatures
+                       -fno-warn-unused-binds
+                       -O2 -rtsopts=all
+  ghc-prof-options:    -auto-all -caf-all -rtsopts=all
+  hs-source-dirs:      cli/dangervisit
   main-is:             Main.hs
   build-depends:       base == 4.6.*
                      , haskore == 0.2.*
