@@ -3,3 +3,5 @@ dist
 *~
 .hsenv
 *.mid
+cabal.sandbox.config
+.cabal-sandbox
