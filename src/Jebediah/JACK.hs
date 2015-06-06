@@ -117,7 +117,7 @@ toEventLists cfg sr bs = map EL.fromPairList .
           toEventLists' _ acc cur [] = reverse $ (reverse cur):acc
           toEventLists' off acc cur el@((NFrames time, body):rest)
               | time <= off * bs' = toEventLists' off acc ((NFrames $ time `mod` bs', body):cur) rest
-              | otherwise = toEventLists' (off + 1) (cur:acc) [] el
+              | otherwise = toEventLists' (off + 1) ((reverse cur):acc) [] el
 
 data Config = Config { beatsPerMinute :: Int
                      , beatsPerMeasure :: Int
