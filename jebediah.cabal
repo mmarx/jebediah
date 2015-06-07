@@ -22,6 +22,8 @@ library
                      , Jebediah.Note
                      , Jebediah.Util
                      , Jebediah.JACK
+                     , Jebediah.MIDI.Messages
+                     , Jebediah.MIDI.Nord.Electro4
   build-depends:       base == 4.7.*
                      , midi == 0.2.*
                      , haskore == 0.2.*

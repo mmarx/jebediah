@@ -8,6 +8,7 @@ module Jebediah.JACK
     , PortName (PortName)
     , at
     , EL.fromPairList
+    , EL.merge
     , jebediahMain
     ) where
 

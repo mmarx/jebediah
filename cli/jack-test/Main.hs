@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 module Main (main) where
 
 import Control.Applicative ((<$>))
@@ -10,6 +11,8 @@ import qualified Sound.MIDI.Message.Channel.Voice as V
 
 import Jebediah.JACK hiding (at)
 import qualified Jebediah.JACK as J
+import Jebediah.MIDI.Messages
+import Jebediah.MIDI.Nord.Electro4
 
 targets :: [PortName]
 targets = PortName <$> [ "Bass-Station-II:midi/capture_1"
@@ -18,15 +21,9 @@ targets = PortName <$> [ "Bass-Station-II:midi/capture_1"
                        , "midi-monitor:input"
                        ]
 
-nOn = M.Channel $ C.Cons { C.messageChannel = C.toChannel 1
-                         , C.messageBody = C.Voice $ V.NoteOn (V.toPitch 60) (V.toVelocity 60)
-                         }
-nOff = M.Channel $ C.Cons { C.messageChannel = C.toChannel 1
-                          , C.messageBody = C.Voice $ V.NoteOff (V.toPitch 60) (V.toVelocity 60)
-                          }
-cC c v = M.Channel $ C.Cons { C.messageChannel = C.toChannel 1
-                        , C.messageBody = C.Voice $ V.Control (MC.fromInt c) v
-                        }
+nOn = toChannel 1 $ noteOn 60 60
+nOff = toChannel 1 $ noteOff 60 60
+cC c = toChannel 1 . controlChange c
 
 cfg :: Config
 cfg = def { beatsPerMinute = 120
@@ -37,10 +34,13 @@ cfg = def { beatsPerMinute = 120
 at :: Int -> Int -> Int -> EventTime
 at m b s = J.at cfg (Measure m) (Beat b) (Subdivision s)
 
+at' m b s evts = ((at m b s),) <$> evts
+
 eL :: MIDIEventList
-eL = fromPairList [ (at 1 1 1, cC 20 0)
-                  , (at 1 1 1, nOn)
-                  , (at 2 1 1, nOff)
+eL = fromPairList $ (at' 1 1 1 (toChannel 1 <$> drawbars Upper "808")) ++
+                  [ (at 1 1 1, nOn) ] ++
+                  ( at' 1 2 1 (toChannel 1 <$> drawbars Upper "012345678")) ++
+                  [ (at 2 1 1, nOff)
                   , (at 3 1 1, nOn)
                   , (at 3 2 1, nOff)
                   , (at 3 2 2, cC 20 127)
