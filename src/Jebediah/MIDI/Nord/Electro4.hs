@@ -11,6 +11,12 @@ import Jebediah.MIDI.Messages
 import qualified Sound.MIDI.Message.Channel as Channel
 
 data Manual = Lower | Upper
+data Model = B3 | Vox | Farfisa
+data RotarySpeed = Slow | Fast
+data RotaryStop = Stopped | Running
+data VibMode = C1 | C2 | C3 | V1 | V2 | V3
+data Instrument = Organ | Piano
+data PianoType = Grand | Upgright | Tines | Reeds | Clavinets | Samples
 
 drawbars :: Manual -> String -> [Channel.Body]
 drawbars m = map (uncurry controlChange . ((cc+) *** drawbar)) . zip [0..8]
