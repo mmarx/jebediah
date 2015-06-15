@@ -9,6 +9,7 @@ module Jebediah.JACK
     , at
     , EL.fromPairList
     , EL.merge
+    , ignoreIncoming
     , jebediahMain
     ) where
 
@@ -26,6 +27,7 @@ import Control.Concurrent.STM ( TChan
                               , newTChanIO
                               , newTQueueIO
                               , readTChan
+                              , readTQueue
                               , tryReadTQueue
                               , writeTChan
                               , writeTQueue
@@ -42,6 +44,7 @@ import Foreign.C.Error (Errno)
 import qualified Sound.MIDI.Message as M
 import Sound.JACK hiding (withPort)
 import Sound.JACK.MIDI ( withPort
+                       , readEventsFromPort
                        , writeEventsToPort
                        )
 import qualified Sound.JACK.MIDI as JM
@@ -59,7 +62,7 @@ newtype Beat = Beat { unBeat :: Int }
 newtype Subdivision = Subdivision { unSubdivision :: Int }
 type EventList = EL.T NFrames M.T
 type MIDIEventList = EL.T EventTime M.T
-
+type Ports = (JM.Port Input, JM.Port Output)
 
 portRegister :: TChan PortId -> PortId -> Bool -> IO ()
 portRegister newPorts pId _ = do
@@ -77,32 +80,43 @@ withBreaking stuff = do
   _ <- takeMVar quitting
   return ()
 
-handleRegistrations :: [PortName] -> TChan PortId -> Client -> Port typ Output -> IO ()
-handleRegistrations targets newPorts client out = do
+handleRegistrations :: Config -> TChan PortId -> Client -> Ports -> IO ()
+handleRegistrations cfg newPorts client (inp, out) = do
   pId <- atomically $ readTChan newPorts
   port <- portById client pId
   pn <- portName port
   as <- portAliases port
-  connectTargets' targets client out $ pn:as
+  connectTargets (targetPorts cfg) client out $ pn:as
+  connectSources (sourcePorts cfg) client inp $ pn:as
 
-connectTargets :: [PortName] -> Client -> Port typ Output -> String -> IO ()
-connectTargets targets client out pn = do
+connectPorts :: Config -> Client -> Ports -> String -> IO ()
+connectPorts cfg client (inp, out) pn = do
   as <- portAliases =<< portByName client pn
-  connectTargets' targets client out $ pn:as
+  connectTargets (targetPorts cfg) client out $ pn:as
+  connectSources (sourcePorts cfg) client inp $ pn:as
 
-connectTargets' :: [PortName] -> Client -> Port typ Output -> [String] -> IO ()
-connectTargets' _ _ _ [] = return ()
-connectTargets' targets client out pns = do
-  on <- portName out
+connectTargets :: [PortName] -> Client -> JM.Port Output -> [String] -> IO ()
+connectTargets _ _ _ [] = return ()
+connectTargets targets client port pns = do
   let cns = intersect pns $ unPortName <$> targets
       want = not . null $ cns
-  when want $ do
-    mapM_ (\tn -> handleExceptions $ connect client on tn) cns
+  pn <- portName port
+  when want $ mapM_ (\tn -> handleExceptions $ connect client pn tn) cns
 
-process :: JM.Port Output -> TQueue EventList -> NFrames -> ExceptionalT Errno IO ()
-process out queue nf = do
-  mEvents <- lift $ atomically $ tryReadTQueue queue
+connectSources :: [PortName] -> Client -> JM.Port Input -> [String] -> IO ()
+connectSources _ _ _ [] = return ()
+connectSources sources client port pns = do
+  let cns = intersect pns $ unPortName <$> sources
+      want = not . null $ cns
+  pn <- portName port
+  when want $ mapM_ (\tn -> handleExceptions $ connect client tn pn) cns
+
+process :: JM.Port Input -> JM.Port Output -> TQueue EventList -> TQueue EventList -> NFrames -> ExceptionalT Errno IO ()
+process inp out iq oq nf = do
+  mEvents <- lift $ atomically $ tryReadTQueue oq
   writeEventsToPort out nf $ fromMaybe EL.empty mEvents
+  iEvents <- readEventsFromPort inp nf
+  lift $ atomically $ writeTQueue iq iEvents
 
 toEventLists :: Config -> SampleRate -> BufferSize -> MIDIEventList -> [EventList]
 toEventLists cfg sr bs = map EL.fromPairList .
@@ -123,9 +137,11 @@ toEventLists cfg sr bs = map EL.fromPairList .
 data Config = Config { beatsPerMinute :: Int
                      , beatsPerMeasure :: Int
                      , subdivisions :: Int
+                     , sourcePorts :: [PortName]
                      , targetPorts :: [PortName]
                      , startupDelay :: Int
                      , clientName :: String
+                     , inName :: String
                      , outName :: String
                      }
 
@@ -133,10 +149,12 @@ instance Default Config
     where def = Config { beatsPerMinute = 120
                        , beatsPerMeasure = 4
                        , subdivisions = 64
+                       , sourcePorts = []
                        , targetPorts = []
                        , startupDelay = 1000000
                        , clientName = "jebediah"
-                       , outName = "midi"
+                       , inName = "midi-in"
+                       , outName = "midi-out"
                        }
 
 populateEvents :: Config -> SampleRate -> BufferSize -> MIDIEventList -> TQueue EventList -> IO ()
@@ -151,20 +169,32 @@ at cfg measure beat subdiv = EventTime $ ((unMeasure measure) - 1) * eventsPerMe
     where eventsPerBeat = subdivisions cfg
           eventsPerMeasure = eventsPerBeat * beatsPerMeasure cfg
 
-jebediahMain :: Config -> MIDIEventList -> IO ()
-jebediahMain cfg el = do
-  let tgts = targetPorts cfg
+processIncoming :: TQueue EventList -> ([M.T] -> IO ()) -> IO ()
+processIncoming iq handle = do
+  events <- atomically $ readTQueue iq
+  handle $ EL.getBodies events
+  processIncoming iq handle
+
+ignoreIncoming :: [M.T] -> IO ()
+ignoreIncoming _ = return ()
+
+jebediahMain :: Config -> MIDIEventList -> ([M.T] -> IO ()) -> IO ()
+jebediahMain cfg el handleEvents = do
   handleExceptions $ withClientDefault (clientName cfg) $ \client -> do
-    (newPorts, events) <- lift $ do
+    (newPorts, events, msgs) <- lift $ do
       s <- SampleRate <$> getSampleRate client
       b <- BufferSize <$> getBufferSize client
       n <- newTChanIO
       e <- newTQueueIO
+      m <- newTQueueIO
       _ <- forkIO $ populateEvents cfg s b el e
-      return $ (n, e)
-    withPortRegistration client (portRegister newPorts) $
+      _ <- forkIO $ processIncoming m handleEvents
+      return $ (n, e, m)
+    withPortRegistration client (portRegister newPorts) $ do
       withPort client (outName cfg) $ \out ->
-         withProcess client (process out events) $
-           withActivation client $ lift $ do
-             getPorts client >>= mapM_ (connectTargets tgts client out)
-             withBreaking $ handleRegistrations tgts newPorts client out
+        withPort client (inName cfg) $ \inp ->
+          withProcess client (process inp out msgs events) $
+            withActivation client $ lift $ do
+              let ports = (inp, out)
+              getPorts client >>= mapM_ (connectPorts cfg client ports)
+              withBreaking $ handleRegistrations cfg newPorts client ports

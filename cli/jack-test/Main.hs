@@ -49,4 +49,4 @@ eL = fromPairList $ (at' 1 1 1 (toChannel 1 <$> drawbars Upper "808")) ++
                   ]
 
 main :: IO ()
-main = putStrLn "Hello, world!" >> jebediahMain cfg eL
+main = putStrLn "Hello, world!" >> jebediahMain cfg eL ignoreIncoming
