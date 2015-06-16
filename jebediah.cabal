@@ -36,6 +36,7 @@ library
                      , event-list == 0.1.*
                      , midi == 0.2.*
                      , jack == 0.7.1
+                     , template-haskell == 2.9.*
 
 
 executable spaceplane-hangar

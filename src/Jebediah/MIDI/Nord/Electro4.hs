@@ -1,18 +1,20 @@
+{-# LANGUAGE TemplateHaskell, QuasiQuotes #-}
 module Jebediah.MIDI.Nord.Electro4
     where
 
 import Control.Arrow ((***))
 import Data.Function (on)
 import Data.List (sortBy)
--- import Jebediah.JACK ( MIDIEventList
---                      , fromPairList
---                      , merge
---                      )
 import Jebediah.MIDI.Messages
 
 import qualified Sound.MIDI.Message.Channel as Channel
 
 data Manual = Lower | Upper
+
+mkEnum "Manual" [enum|
+                 Lower 0
+                 Upper 127|]
+
 data OrganModel = B3 | Vox | Farfisa
 data RotarySpeed = Slow | Fast
 data RotaryStop = Stopped | Running
@@ -21,10 +23,10 @@ data Instrument = Organ | Piano
 data PianoType = Grand | Upgright | Tines | Reeds | Clavinets | Samples
 data Toggle = On | Off
 
-data Electro4
+data Electro4 = Electro4
 
 electro4 :: Electro4
-electro4 = undefined
+electro4 = Electro4
 
 ctrlNames :: [(Int, String)]
 ctrlNames = sortBy (compare `on` fst)
@@ -116,3 +118,6 @@ drawbars m = map (uncurry controlChange . ((cc+) *** drawbar)) . zip [0..8]
           drawbar '7' = 112
           drawbar '8' = 127
           drawbar _ = 0
+
+manual :: Manual -> [Channel.Body]
+manual = enumerable electro4 "Preset/Split"
