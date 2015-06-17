@@ -5,7 +5,7 @@ module Jebediah.MIDI.Nord.Electro4
 import Control.Arrow ((***))
 import Data.Function (on)
 import Data.List (sortBy)
-import Jebediah.MIDI.Messages
+import Jebediah.MIDI.Instrument
 
 import Sound.MIDI.Message.Channel (Body)
 

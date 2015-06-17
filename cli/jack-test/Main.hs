@@ -12,12 +12,14 @@ import qualified Sound.MIDI.Message.Channel.Voice as V
 import Jebediah.JACK hiding (at)
 import qualified Jebediah.JACK as J
 import Jebediah.MIDI.Messages
+import Jebediah.MIDI.Instrument
 import Jebediah.MIDI.Nord.Electro4
 
 targets :: [PortName]
 targets = PortName <$> [ "Bass-Station-II:midi/capture_1"
                        , "Nord-Electro-4:midi/capture_1"
                        , "MIDISPORT-2x2-Anniv:midi/capture_1"
+                       , "Blofeld:midi/capture_1"
                        , "midi-monitor:input"
                        ]
 

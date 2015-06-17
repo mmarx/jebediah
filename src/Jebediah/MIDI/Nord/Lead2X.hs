@@ -4,9 +4,9 @@ module Jebediah.MIDI.Nord.Lead2X
 
 import Data.Function (on)
 import Data.List (sortBy)
-import Jebediah.MIDI.Messages
+import Jebediah.MIDI.Instrument
 
-import Sound.MIDI.Message (Body)
+import Sound.MIDI.Message.Channel (Body)
 
 data Lead2X = Lead2X
 
