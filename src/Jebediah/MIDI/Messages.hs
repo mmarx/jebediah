@@ -71,12 +71,14 @@ enum = QuasiQuoter { quoteExp = qe }
 
 mkEnum :: String -> [(String, Integer)] -> Q [Dec]
 mkEnum name' pairs' = do
+  decl <- dataD (cxt []) name [] cons [''Eq, ''Bounded, ''Show, ''Read]
   inst <- instanceD (cxt []) (appT (conT ''Enum) (conT name))
           [ funD (mkName "toEnum") (genTo <$> pairs)
           , funD (mkName "fromEnum") (genFrom <$> pairs)
           ]
-  return [inst]
+  return [decl, inst]
   where name = mkName name'
         pairs = (mkName *** integerL) <$> pairs'
+        cons = (\n -> normalC n []) . fst <$> pairs
         genTo (c, v) = clause [litP v] (normalB $ conE c) []
         genFrom (c, v) = clause [conP c []] (normalB $ litE v) []

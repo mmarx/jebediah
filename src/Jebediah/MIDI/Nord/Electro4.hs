@@ -9,19 +9,46 @@ import Jebediah.MIDI.Messages
 
 import qualified Sound.MIDI.Message.Channel as Channel
 
-data Manual = Lower | Upper
-
 mkEnum "Manual" [enum|
                  Lower 0
                  Upper 127|]
 
-data OrganModel = B3 | Vox | Farfisa
-data RotarySpeed = Slow | Fast
-data RotaryStop = Stopped | Running
-data VibMode = C1 | C2 | C3 | V1 | V2 | V3
-data Instrument = Organ | Piano
-data PianoType = Grand | Upgright | Tines | Reeds | Clavinets | Samples
-data Toggle = On | Off
+mkEnum "OrganModel" [enum|
+                     B3 0
+                     Farfisa 64
+                     Vox 127|]
+
+mkEnum "RotarySpeed" [enum|
+                      Slow 0
+                      Fast 127|]
+
+mkEnum "RotaryStop" [enum|
+                     Running 0
+                     Stopped 127|]
+
+
+mkEnum "VibMode" [enum|
+                  V1 0
+                  C1 26
+                  V2 51
+                  C2 77
+                  V3 102
+                  C3 127|]
+
+mkEnum "Instrument" [enum|
+                     Organ 0
+                     Piano 127|]
+mkEnum "PianoType" [enum|
+                    Grand 0
+                    Upright 26
+                    Tines 51
+                    Reeds 77
+                    Clavinets 102
+                    Samples 127|]
+
+mkEnum "Toggle" [enum|
+                 Off 0
+                 On 127|]
 
 data Electro4 = Electro4
 
@@ -105,9 +132,9 @@ instance Control Electro4 where
 
 drawbars :: Manual -> String -> [Channel.Body]
 drawbars m = map (uncurry controlChange . ((cc+) *** drawbar)) . zip [0..8]
-    where cc = case m of
-                 Upper -> controlId electro4 "Upper: Drawbar 1"
-                 Lower -> controlId electro4 "Lower: Drawbar 1"
+    where cc = controlId electro4 $ case m of
+                 Upper -> "Upper: Drawbar 1"
+                 Lower -> "Lower: Drawbar 1"
           drawbar '0' = 0
           drawbar '1' = 16
           drawbar '2' = 32
@@ -119,5 +146,30 @@ drawbars m = map (uncurry controlChange . ((cc+) *** drawbar)) . zip [0..8]
           drawbar '8' = 127
           drawbar _ = 0
 
+en :: Enum cv => String -> cv -> [Channel.Body]
+en = enumerable electro4
+
 manual :: Manual -> [Channel.Body]
-manual = enumerable electro4 "Preset/Split"
+manual = en "Preset/Split"
+
+organModel :: OrganModel -> [Channel.Body]
+organModel = en "Organ Model"
+
+rotarySpeed :: RotarySpeed -> [Channel.Body]
+rotarySpeed = en "Rotary Speed"
+
+rotaryStopMode :: RotaryStop -> [Channel.Body]
+rotaryStopMode = en "Rotary Stop Mode"
+
+vibratoMode :: VibMode -> [Channel.Body]
+vibratoMode = en "Vibrato Mode"
+
+vibrato :: Manual -> Toggle -> [Channel.Body]
+vibrato Lower = en "Lower: Vibrato"
+vibrato Upper = en "Upper: Vibrato"
+
+instrument :: Instrument -> [Channel.Body]
+instrument = en "Instrument Selection"
+
+pianoType :: PianoType -> [Channel.Body]
+pianoType = en "Piano Type"
