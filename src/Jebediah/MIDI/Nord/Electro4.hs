@@ -7,7 +7,7 @@ import Data.Function (on)
 import Data.List (sortBy)
 import Jebediah.MIDI.Messages
 
-import qualified Sound.MIDI.Message.Channel as Channel
+import Sound.MIDI.Message.Channel (Body)
 
 mkEnum "Manual" [enum|
                  Lower 0
@@ -130,7 +130,7 @@ ctrlNames = sortBy (compare `on` fst)
 instance Control Electro4 where
     controlNames _ = ctrlNames
 
-drawbars :: Manual -> String -> [Channel.Body]
+drawbars :: Manual -> String -> [Body]
 drawbars m = map (uncurry controlChange . ((cc+) *** drawbar)) . zip [0..8]
     where cc = controlId electro4 $ case m of
                  Upper -> "Upper: Drawbar 1"
@@ -146,30 +146,30 @@ drawbars m = map (uncurry controlChange . ((cc+) *** drawbar)) . zip [0..8]
           drawbar '8' = 127
           drawbar _ = 0
 
-en :: Enum cv => String -> cv -> [Channel.Body]
+en :: Enum cv => String -> cv -> [Body]
 en = enumerable electro4
 
-manual :: Manual -> [Channel.Body]
+manual :: Manual -> [Body]
 manual = en "Preset/Split"
 
-organModel :: OrganModel -> [Channel.Body]
+organModel :: OrganModel -> [Body]
 organModel = en "Organ Model"
 
-rotarySpeed :: RotarySpeed -> [Channel.Body]
+rotarySpeed :: RotarySpeed -> [Body]
 rotarySpeed = en "Rotary Speed"
 
-rotaryStopMode :: RotaryStop -> [Channel.Body]
+rotaryStopMode :: RotaryStop -> [Body]
 rotaryStopMode = en "Rotary Stop Mode"
 
-vibratoMode :: VibMode -> [Channel.Body]
+vibratoMode :: VibMode -> [Body]
 vibratoMode = en "Vibrato Mode"
 
-vibrato :: Manual -> Toggle -> [Channel.Body]
+vibrato :: Manual -> Toggle -> [Body]
 vibrato Lower = en "Lower: Vibrato"
 vibrato Upper = en "Upper: Vibrato"
 
-instrument :: Instrument -> [Channel.Body]
+instrument :: Instrument -> [Body]
 instrument = en "Instrument Selection"
 
-pianoType :: PianoType -> [Channel.Body]
+pianoType :: PianoType -> [Body]
 pianoType = en "Piano Type"
