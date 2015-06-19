@@ -2,8 +2,6 @@
 module Jebediah.MIDI.Nord.Lead2X
     where
 
-import Data.Function (on)
-import Data.List (sortBy)
 import Jebediah.MIDI.Instrument
 
 import Sound.MIDI.Message.Channel (Body)
@@ -14,7 +12,7 @@ lead2X :: Lead2X
 lead2X = Lead2X
 
 ctrlNames :: [(Int, String)]
-ctrlNames = sortBy (compare `on` fst)
+ctrlNames = sorted
             [ (7, "Gain")
             , (17, "Octave Shift")
             , (18, "Modulation Wheel Destination")

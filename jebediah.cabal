@@ -26,6 +26,8 @@ library
                      , Jebediah.MIDI.Instrument
                      , Jebediah.MIDI.Nord.Lead2X
                      , Jebediah.MIDI.Nord.Electro4
+                     , Jebediah.MIDI.Novation.BassStationII
+                     , Jebediah.MIDI.Waldorf.Blofeld
   build-depends:       base == 4.7.*
                      , midi == 0.2.*
                      , haskore == 0.2.*

@@ -1,11 +1,21 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-missing-fields #-}
-module Jebediah.MIDI.Instrument where
+module Jebediah.MIDI.Instrument
+         ( Control (..)
+         , controlChange
+         , enum
+         , enumerable
+         , mkEnum
+         , sorted
+         )
+       where
 
 import Control.Applicative ((<$>))
 import Control.Arrow ( (***)
                      , second
                      )
+import Data.Function (on)
+import Data.List (sortBy)
 import Data.Maybe ( fromJust
                   , fromMaybe
                   )
@@ -29,6 +39,9 @@ class Control a where
     showCC :: a -> Controller.T -> Controller.Value -> String
     showCC a cc cv = cn <> " (" <> show (Controller.toInt cc) <> "): " <> show cv
         where cn = controlName a $ Controller.toInt cc
+
+sorted :: [(Int, String)] -> [(Int, String)]
+sorted = sortBy (compare `on` fst)
 
 controlChange :: Int -> Int -> Channel.Body
 controlChange c v = Channel.Voice $ Voice.Control (Controller.fromInt c) v

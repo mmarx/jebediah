@@ -3,8 +3,6 @@ module Jebediah.MIDI.Nord.Electro4
     where
 
 import Control.Arrow ((***))
-import Data.Function (on)
-import Data.List (sortBy)
 import Jebediah.MIDI.Instrument
 
 import Sound.MIDI.Message.Channel (Body)
@@ -56,7 +54,7 @@ electro4 :: Electro4
 electro4 = Electro4
 
 ctrlNames :: [(Int, String)]
-ctrlNames = sortBy (compare `on` fst)
+ctrlNames = sorted
             [ (16, "Upper: Drawbar 1")
             , (17, "Upper: Drawbar 2")
             , (18, "Upper: Drawbar 3")
