@@ -1,6 +1,9 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Jebediah.JACK
     ( Config (..)
-    , EventTime (EventTime)
+    , EventTime ( EventTime
+                , unEventTime
+                )
     , MIDIEventList
     , Measure (Measure)
     , Beat (Beat)
@@ -9,6 +12,7 @@ module Jebediah.JACK
     , at
     , EL.fromPairList
     , EL.merge
+    , EL.mergeBy
     , ignoreIncoming
     , jebediahMain
     ) where
@@ -57,6 +61,7 @@ newtype PortName = PortName { unPortName :: String }
 newtype SampleRate = SampleRate { unSampleRate :: Int }
 newtype BufferSize = BufferSize { unBufferSize :: Int }
 newtype EventTime = EventTime { unEventTime :: Int }
+                    deriving (Eq, Ord, Num)
 newtype Measure = Measure { unMeasure :: Int }
 newtype Beat = Beat { unBeat :: Int }
 newtype Subdivision = Subdivision { unSubdivision :: Int }

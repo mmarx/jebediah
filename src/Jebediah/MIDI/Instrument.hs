@@ -6,6 +6,7 @@ module Jebediah.MIDI.Instrument
          , enum
          , enumerable
          , mkEnum
+         , programChange
          , sorted
          )
        where
@@ -45,6 +46,9 @@ sorted = sortBy (compare `on` fst)
 
 controlChange :: Int -> Int -> Channel.Body
 controlChange c v = Channel.Voice $ Voice.Control (Controller.fromInt c) v
+
+programChange :: Int -> Channel.Body
+programChange p = Channel.Voice $ Voice.ProgramChange $ Voice.toProgram p
 
 enumerable :: (Control i, Enum cc) => i -> String -> cc -> [Channel.Body]
 enumerable instr ctrl value = [controlChange cc cv]

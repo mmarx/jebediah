@@ -58,6 +58,7 @@ showChan chan body = let
 
 showVoice :: Control i => i -> V.T -> String
 showVoice instr (V.Control cc cv) = showCC instr cc cv
+showVoice _ (V.ProgramChange pr) = "Program change: " <> (show $ V.fromProgram pr)
 showVoice _ _ = ""
 
 main :: IO ()
