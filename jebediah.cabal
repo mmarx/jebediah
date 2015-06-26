@@ -132,35 +132,3 @@ executable minmus
                      , event-list == 0.1.*
                      , midi == 0.2.*
                      , jebediah
-
-executable mün
-  default-language:    Haskell2010
-  ghc-options:         -Wall -Werror
-                       -fno-warn-missing-signatures
-                       -fno-warn-unused-binds
-                       -fno-warn-unused-imports
-                       -O2 -rtsopts=all -threaded
-  ghc-prof-options:    -auto-all -caf-all -rtsopts=all
-  hs-source-dirs:      cli/mün
-  main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , data-default == 0.5.*
-                     , event-list == 0.1.*
-                     , midi == 0.2.*
-                     , jebediah
-
-executable kerbin
-  default-language:    Haskell2010
-  ghc-options:         -Wall -Werror
-                       -fno-warn-missing-signatures
-                       -fno-warn-unused-binds
-                       -fno-warn-unused-imports
-                       -O2 -rtsopts=all -threaded
-  ghc-prof-options:    -auto-all -caf-all -rtsopts=all
-  hs-source-dirs:      cli/kerbin
-  main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , data-default == 0.5.*
-                     , event-list == 0.1.*
-                     , midi == 0.2.*
-                     , jebediah

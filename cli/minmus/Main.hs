@@ -135,7 +135,8 @@ eL = foldl1 (mergeBy (\ _ _ -> True))
      [ line
      , drone 3 (dur line) 26 64
      ]
-  where line = melody 2 (phrase 62 hijaz [0, 6, -3, 1, -5, 3, 3, -1, 2, -6, -2, -5, 0, 0, 0, -2, 0, 0, 0, 3, 3, 0, 0]) (cycle malfuf') [32..]
+  where mel = [0, 6, -3, 1, -5, 3, 3, -1, 2, -6, -2, -5, 0, 0, 0, -2, 0, 0, 0, 3, 3, 0, 0]
+        line = melody 2 (phrase 62 hijaz (mel ++ reverse mel)) (cycle malfuf') (cycle $ [32..96] ++ [96, 95 .. 32])
 
 
 main :: IO ()
