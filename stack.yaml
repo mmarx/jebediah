@@ -1,0 +1,17 @@
+flags: {}
+packages:
+- '.'
+- 'vendor/jack'
+extra-deps:
+- event-list-0.1.1.2
+- explicit-exception-0.1.7.3
+- haskore-0.2.0.5
+- jack-0.7.1
+- midi-0.2.1.5
+- enumset-0.0.4
+- markov-chain-0.0.3.3
+- monoid-transformer-0.0.3
+- non-negative-0.1.1
+- utility-ht-0.0.10
+- storable-record-0.0.3
+resolver: lts-2.15

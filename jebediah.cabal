@@ -28,19 +28,19 @@ library
                      , Jebediah.MIDI.Nord.Electro4
                      , Jebediah.MIDI.Novation.BassStationII
                      , Jebediah.MIDI.Waldorf.Blofeld
-  build-depends:       base == 4.7.*
-                     , midi == 0.2.*
-                     , haskore == 0.2.*
-                     , process == 1.2.0.*
-                     , data-default == 0.5.*
-                     , stm == 2.4.*
-                     , transformers == 0.3.*
-                     , unix == 2.7.*
-                     , explicit-exception == 0.1.*
-                     , event-list == 0.1.*
-                     , midi == 0.2.*
-                     , jack == 0.7.1
-                     , template-haskell == 2.9.*
+  build-depends:       base
+                     , midi
+                     , haskore
+                     , process
+                     , data-default
+                     , stm
+                     , transformers
+                     , unix
+                     , explicit-exception
+                     , event-list
+                     , midi
+                     , jack
+                     , template-haskell
 
 
 executable spaceplane-hangar
@@ -53,8 +53,8 @@ executable spaceplane-hangar
   ghc-prof-options:    -auto-all -caf-all -rtsopts=all
   hs-source-dirs:      cli/spaceplane-hangar
   main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , haskore == 0.2.*
+  build-depends:       base
+                     , haskore
                      , jebediah
 
 executable vehicle-assembly-building
@@ -67,8 +67,8 @@ executable vehicle-assembly-building
   ghc-prof-options:    -auto-all -caf-all -rtsopts=all
   hs-source-dirs:      cli/vehicle-assembly-building
   main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , haskore == 0.2.*
+  build-depends:       base
+                     , haskore
                      , jebediah
 
 executable dangervisit
@@ -80,8 +80,8 @@ executable dangervisit
   ghc-prof-options:    -auto-all -caf-all -rtsopts=all
   hs-source-dirs:      cli/dangervisit
   main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , haskore == 0.2.*
+  build-depends:       base
+                     , haskore
                      , jebediah
 
 executable monitor
@@ -94,10 +94,10 @@ executable monitor
   ghc-prof-options:    -auto-all -caf-all -rtsopts=all
   hs-source-dirs:      cli/monitor
   main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , data-default == 0.5.*
-                     , event-list == 0.1.*
-                     , midi == 0.2.*
+  build-depends:       base
+                     , data-default
+                     , event-list
+                     , midi
                      , jebediah
 
 
@@ -111,10 +111,10 @@ executable jack-test
   ghc-prof-options:    -auto-all -caf-all -rtsopts=all
   hs-source-dirs:      cli/jack-test
   main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , data-default == 0.5.*
-                     , event-list == 0.1.*
-                     , midi == 0.2.*
+  build-depends:       base
+                     , data-default
+                     , event-list
+                     , midi
                      , jebediah
 
 executable minmus
@@ -127,8 +127,8 @@ executable minmus
   ghc-prof-options:    -auto-all -caf-all -rtsopts=all
   hs-source-dirs:      cli/minmus
   main-is:             Main.hs
-  build-depends:       base == 4.7.*
-                     , data-default == 0.5.*
-                     , event-list == 0.1.*
-                     , midi == 0.2.*
+  build-depends:       base
+                     , data-default
+                     , event-list
+                     , midi
                      , jebediah

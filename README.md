@@ -2,9 +2,8 @@
 Experimental music playground
 
 ## Building
-    cabal install --only-dependencies
-    cabal configure
-    cabal build
+    darcs get http://code.haskell.org/jack/ vendor/jack
+    stack build
 
 Using hsenv or cabal sandboxes might be a good idea.
 

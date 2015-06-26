@@ -5,3 +5,5 @@ dist
 *.mid
 cabal.sandbox.config
 .cabal-sandbox
+.stack-work
+vendor/
