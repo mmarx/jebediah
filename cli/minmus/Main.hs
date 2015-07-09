@@ -258,11 +258,13 @@ eL = do
                                        ]
       outro = delay (dur acab) $ merge [ drone bs2 48 (base - 36) 48
                                        , line1'
-                                       , delay 16 $ line3
+                                       , delay 14 $ line3
                                        , delay 8 $ drone ld2 40 (base - 24) 48
                                        , line3'
                                        , pad ld4 32 base 48
                                        , pad blo 48 (base - 24) 48
+                                       , delay 46 $ noise 5 eUp 16 base 64
+                                       , delay 47 $ pad eUp 32 base 64
                                        ]
   return $ merge
     [ ini
