@@ -11,10 +11,9 @@ module Jebediah.JACK
     , PortName (PortName)
     , at
     , EL.fromPairList
-    , EL.merge
-    , EL.mergeBy
     , ignoreIncoming
     , jebediahMain
+    , merge
     ) where
 
 import Control.Applicative ((<$>))
@@ -61,7 +60,7 @@ newtype PortName = PortName { unPortName :: String }
 newtype SampleRate = SampleRate { unSampleRate :: Int }
 newtype BufferSize = BufferSize { unBufferSize :: Int }
 newtype EventTime = EventTime { unEventTime :: Int }
-                    deriving (Eq, Ord, Num)
+                    deriving (Eq, Ord, Num, Show)
 newtype Measure = Measure { unMeasure :: Int }
 newtype Beat = Beat { unBeat :: Int }
 newtype Subdivision = Subdivision { unSubdivision :: Int }
@@ -203,3 +202,6 @@ jebediahMain cfg el handleEvents = do
               let ports = (inp, out)
               getPorts client >>= mapM_ (connectPorts cfg client ports)
               withBreaking $ handleRegistrations cfg newPorts client ports
+
+merge :: [MIDIEventList] -> MIDIEventList
+merge = foldl1 $ EL.mergeBy $ const $ const True

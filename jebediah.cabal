@@ -28,6 +28,7 @@ library
                      , Jebediah.MIDI.Nord.Electro4
                      , Jebediah.MIDI.Novation.BassStationII
                      , Jebediah.MIDI.Waldorf.Blofeld
+                     , Jebediah.Random
   build-depends:       base
                      , midi
                      , haskore
@@ -41,6 +42,8 @@ library
                      , midi
                      , jack
                      , template-haskell
+                     , random
+                     , containers
 
 
 executable spaceplane-hangar
