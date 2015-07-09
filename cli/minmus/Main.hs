@@ -145,10 +145,10 @@ melody chan notes rhythm velos = fromPairList $
         go bar off acc ar@((Note len):rhs) an@(note:ns) av@(vel:vs)
           | off >= subdivisions cfg = go (bar + 1) (subdivisions cfg - off) acc ar an av
           | off + len >= subdivisions cfg = go (bar + 1) (subdivisions cfg - off - len)
-                                            ((pos, noteOn note vel):(pos + len, noteOff note 0):acc)
+                                            ((pos, noteOn note vel):(pos + len - 1, noteOff note 0):acc)
                                             rhs ns vs
           | otherwise = go bar (off + len)
-                        ((pos, noteOn note vel):(pos + len, noteOff note 0):acc)
+                        ((pos, noteOn note vel):(pos + len - 1, noteOff note 0):acc)
                         rhs ns vs
           where pos = bar * subdivisions cfg + off
 
@@ -205,10 +205,15 @@ eL = do
   let base = 57
       blo, eLow, eUp, bs2, ld1, ld2, ld3, ld4 :: Int
       (blo, eLow, eUp, bs2, ld1, ld2, ld3, ld4) = (0, 1, 2, 3, 4, 5, 6, 7)
-      (mel, g') = randomMelody 32 g
-      (mel', g'') = randomMelody 8 g'
-      line1 = melody eLow (line base minor mel) (cycle fours) (cycle [64])
-      line2 = melody eUp (line 72 major mel') (cycle fours) (cycle [64])
+      (mel1, g1) = randomMelody 32 g
+      (mel2, g2) = randomMelody 8 g1
+      (mel3, g3) = randomMelody 32 g2
+      line1 = melody eUp (line base minor mel1) (cycle fours) (cycle [64])
+      line2 = melody eLow (line 72 major mel2) (cycle fours) (cycle [64])
+      line3 = melody eLow (line base minor mel3) (cycle fours) (cycle [64])
+      line1' = melody ld1 (line base minor mel1) (cycle fours) (cycle [64])
+      line2' = melody ld2 (line 72 major mel2) (cycle fours) (cycle [64])
+      line3' = melody ld3 (line base minor mel3) (cycle fours) (cycle [64])
       ini = merge [ prog blo 1
                   , prog eUp 7
                   , prog bs2 1
@@ -220,7 +225,6 @@ eL = do
       intro = delay (dur ini) $
               merge [ drone bs2 (bars 2) (base - 36) 64
                     , delay (measure 2) $ drone bs2 (bars 1) (base - 33) 64
-                    , delay (measure 2 + 64) $ noise 5 eUp 16 base 64
                     , delay (measure 2 + 128) $ pad blo (bars 1) (base - 24) 64
                     , delay (measure 3) $ drone bs2 (bars 1) (base - 36) 64
                     , delay (measure 3 + 128) $ noise 5 eUp 16 base 64
@@ -228,16 +232,38 @@ eL = do
                     ]
       a = merge [ prog eUp 7
                 , delay 1 $ line1
-                , delay 1 $ tin eUp (dur line1) minor (base - 12) [64, 48, 80, 64] bells
+                , delay 1 $ tin eUp 32 minor (base - 12) [64, 48, 80, 64] bells
+                , delay 1 $ drone bs2 (dur line1) (base - 36) 48
                 ]
-      c = merge [a]
-      b = merge [a]
+      c = merge [ line2
+                , delay (dur line2) $ line3
+                , delay (dur line2 + dur line3) $ line2
+                , delay (dur line2 + dur line3 + dur line2) $ line3
+                , delay (dur line2) $ drone bs2 (dur line3) (base - 36) 64
+                , delay (dur line2 + dur line3) $ pad blo (dur line3) (base - 24) 64
+                ]
+      b = merge [ line1
+                , line2
+                , delay (dur line2) $ line3
+                , delay (dur line2 + dur line3) $ line2
+                , delay (dur line2 + dur line3 + dur line2) $ line3
+                , delay (dur line2) $ drone bs2 (dur line3) (base - 36) 64
+                , delay (dur line2 + dur line3) $ pad blo (dur line3) (base - 24) 64
+                ]
+
       acab = delay (dur intro) $ merge [ a
                                        , delay (dur a) c
                                        , delay (dur a + dur c) a
                                        , delay (2 * dur a + dur c) b
                                        ]
-      outro = delay (dur acab) $ merge [intro, delay (dur intro) intro, delay (dur intro + dur intro) intro]
+      outro = delay (dur acab) $ merge [ drone bs2 48 (base - 36) 48
+                                       , line1'
+                                       , delay 16 $ line3
+                                       , delay 8 $ drone ld2 40 (base - 24) 48
+                                       , line3'
+                                       , pad ld4 32 base 48
+                                       , pad blo 48 (base - 24) 48
+                                       ]
   return $ merge
     [ ini
     , intro
