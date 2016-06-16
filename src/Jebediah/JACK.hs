@@ -16,7 +16,6 @@ module Jebediah.JACK
     , merge
     ) where
 
-import Control.Applicative ((<$>))
 import Control.Concurrent ( forkIO
                           , threadDelay
                           )

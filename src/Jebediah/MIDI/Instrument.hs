@@ -11,7 +11,6 @@ module Jebediah.MIDI.Instrument
          )
        where
 
-import Control.Applicative ((<$>))
 import Control.Arrow ( (***)
                      , second
                      )

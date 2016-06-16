@@ -4,7 +4,6 @@ module Jebediah.Random
        , randomMelody
        ) where
 
-import Control.Applicative ((<$>))
 import Data.Foldable (toList)
 import Data.Sequence (unfoldl)
 import System.Random ( RandomGen

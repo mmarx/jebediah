@@ -4,7 +4,6 @@ module Jebediah.Counterpoint
 import Prelude hiding ( fst
                       , snd
                       )
-import Control.Applicative ((<$>))
 import Data.Ratio ((%))
 
 import Haskore.Basic.Duration ( fromRatio
