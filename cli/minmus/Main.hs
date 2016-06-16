@@ -1,7 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 module Main (main) where
 
-import Control.Applicative ((<$>))
 import Control.Arrow ((***))
 import Data.Default (def)
 import Data.EventList.Absolute.TimeBody ( duration

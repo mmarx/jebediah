@@ -8,3 +8,4 @@ cabal.sandbox.config
 .stack-work
 vendor/
 /log.txt
+flycheck_*.hs
